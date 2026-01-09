@@ -7,36 +7,43 @@ import useAuth from "../../../hooks/useAuth";
 
 
 const CreateClub = () => {
-  const { register, handleSubmit, watch } = useForm();
+  const { register, handleSubmit, watch, formState: { errors, isSubmitting } } = useForm();
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
   const [isPaid, setIsPaid] = useState(false);
 
   const image = watch("image");
 
-  const createClubSubmit = (data) => {
-    const clubData = {
-      clubName: data.clubName,
-      description: data.description,
-      category: data.category,
-      image: data.image,
-      membershipFee: isPaid ? Number(data.membershipFee) : 0,
-      createdBy: user?.email
-    };
-    console.log(clubData)
+  const createClubSubmit = async (data) => {
+    try {
+      const clubData = {
+        clubName: data.clubName,
+        description: data.description,
+        category: data.category,
+        image: data.image,
+        membershipFee: isPaid ? Number(data.membershipFee) : 0,
+        createdBy: user?.email
+      };
+      console.log(clubData)
 
-    axiosSecure.post("/clubs", clubData)
-      .then(res => {
-        if (res.data.insertedId) {
-          Swal.fire({
-            position: "top-end",
-            icon: "success",
-            title: "✅ Club created! Waiting for admin approval",
-            showConfirmButton: false,
-            timer: 2500
-          });
-        }
+      const res = await axiosSecure.post("/clubs", clubData);
+      if (res.data.insertedId) {
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "✅ Club created! Waiting for admin approval",
+          showConfirmButton: false,
+          timer: 2500
+        });
+      }
+    } catch (error) {
+      console.error('Error creating club:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Failed to create club. Please try again.',
       });
+    }
   };
 
   return (
@@ -49,20 +56,27 @@ const CreateClub = () => {
         <div>
           <label className="font-medium">Club Name</label>
           <input
-            {...register("clubName", { required: true })}
-            placeholder="Club Name"
+            {...register("clubName", { required: 'Club Name is required' })}
+            placeholder="e.g., Photography Enthusiasts Club"
             className="input input-bordered w-full mt-1"
           />
+          {errors.clubName && (
+            <p className="text-red-500 text-sm mt-1">{errors.clubName.message}</p>
+          )}
         </div>
 
         {/* Image URL */}
         <div>
           <label className="font-medium">Club Banner Image URL</label>
           <input
-            {...register("image", { required: true })}
-            placeholder="https://image-url.com"
+            {...register("image", { required: 'Image URL is required' })}
+            placeholder="e.g., https://images.unsplash.com/photo-1542500429-4116073fc98f"
             className="input input-bordered w-full mt-1"
           />
+          {errors.image && (
+            <p className="text-red-500 text-sm mt-1">{errors.image.message}</p>
+          )}
+
 
           {image && (
             <img
@@ -77,17 +91,21 @@ const CreateClub = () => {
         <div>
           <label className="font-medium">Description</label>
           <textarea
-            {...register("description", { required: true })}
+            {...register("description", { required: 'Description is required' })}
             rows="4"
-            placeholder="Write about your club..."
+            placeholder="Describe your club's mission, activities, meeting schedule, and goals..."
             className="textarea textarea-bordered w-full mt-1"
           ></textarea>
+          {errors.description && (
+            <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>
+          )}
         </div>
 
         {/* Category */}
         <div>
           <label className="font-medium">Category</label>
-          <select {...register("category")} className="select select-bordered w-full mt-1">
+          <select {...register("category", { required: 'Category is required' })} className="select select-bordered w-full mt-1">
+            <option value="">Select a category</option>
             <option>Photography</option>
             <option>Tech</option>
             <option>Sports</option>
@@ -95,6 +113,9 @@ const CreateClub = () => {
             <option>Journalism</option>
             <option>Media</option>
           </select>
+          {errors.category && (
+            <p className="text-red-500 text-sm mt-1">{errors.category.message}</p>
+          )}
         </div>
 
 
@@ -124,18 +145,23 @@ const CreateClub = () => {
           </div>
 
           {isPaid && (
-            <input
-              type="number"
-              {...register("membershipFee")}
-              placeholder="Enter fee amount"
-              className="input input-bordered w-full"
-            />
+            <div>
+              <input
+                type="number"
+                {...register("membershipFee", { required: 'Membership fee is required when paid', min: { value: 1, message: 'Fee must be at least 1' } })}
+                placeholder="e.g., 25"
+                className="input input-bordered w-full"
+              />
+              {errors.membershipFee && (
+                <p className="text-red-500 text-sm mt-1">{errors.membershipFee.message}</p>
+              )}
+            </div>
           )}
         </div>
 
         {/* Submit */}
-        <button className="btn btn-success w-full font-bold">
-          Create Club
+        <button type="submit" className="btn btn-success w-full font-bold" disabled={isSubmitting}>
+          {isSubmitting ? 'Creating...' : 'Create Club'}
         </button>
 
       </form>

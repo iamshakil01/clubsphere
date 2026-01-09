@@ -41,7 +41,7 @@ const Login = () => {
                 type="email"
                 {...register('email', { required: true })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-400 transition duration-150"
-                placeholder="Email"
+                placeholder="e.g., john.doe@example.com"
               />
               {
                 errors.email?.type === 'required' && <p className='text-red-500 text-xs mt-1'>Email Is Required</p>
@@ -58,7 +58,7 @@ const Login = () => {
                     minLength: 6
                   })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-400 transition duration-150"
-                placeholder="Password"
+                placeholder="Enter your password..."
               />
               {
                 errors.password?.type === 'minLength' && <p className='text-red-500 text-xs mt-1'>Password must be 6 character or longer</p>

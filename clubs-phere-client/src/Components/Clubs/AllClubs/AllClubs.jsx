@@ -7,6 +7,8 @@ const AllClubs = () => {
     const [search, setSearch] = useState("");
     const [category, setCategory] = useState("all");
     const [type, setType] = useState("all");
+    const [currentPage, setCurrentPage] = useState(1);
+    const clubsPerPage = 10; // Show 10 clubs per page
     const axiosSecure = useAxiosSecure()
 
     useEffect(() => {
@@ -24,9 +26,20 @@ const AllClubs = () => {
         );
     });
 
+    // Pagination logic
+    const indexOfLastClub = currentPage * clubsPerPage;
+    const indexOfFirstClub = indexOfLastClub - clubsPerPage;
+    const currentClubs = filteredClubs.slice(indexOfFirstClub, indexOfLastClub);
+    const totalPages = Math.ceil(filteredClubs.length / clubsPerPage);
+
     return (
         <div className="max-w-7xl mx-auto px-4 py-10">
             <h1 className="text-3xl font-bold mb-6">Explore Clubs</h1>
+            
+            {/* Showing results count */}
+            <div className="mb-4 text-gray-600">
+                Showing {indexOfFirstClub + 1}-{Math.min(indexOfLastClub, filteredClubs.length)} of {filteredClubs.length} clubs
+            </div>
 
             {/* Filters */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8">
@@ -63,7 +76,7 @@ const AllClubs = () => {
 
          {/* Club Cards */}
 <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-  {filteredClubs.map(club => (
+  {currentClubs.map(club => (
     <div
       key={club._id}
       className="group relative bg-white rounded-3xl shadow-lg border border-transparent hover:border-green-200 overflow-hidden transform hover:scale-105 transition-all duration-300"
@@ -118,6 +131,50 @@ const AllClubs = () => {
   ))}
 </div>
 
+            {/* Pagination */}
+            {totalPages > 1 && (
+                <div className="flex justify-center mt-10">
+                    <div className="join">
+                        <button 
+                            className={`join-item btn ${currentPage === 1 ? 'btn-disabled' : 'btn-neutral'}`}
+                            onClick={() => setCurrentPage(1)}
+                            disabled={currentPage === 1}
+                        >
+                            « First
+                        </button>
+                        <button 
+                            className={`join-item btn ${currentPage === 1 ? 'btn-disabled' : 'btn-neutral'}`}
+                            onClick={() => setCurrentPage(currentPage - 1)}
+                            disabled={currentPage === 1}
+                        >
+                            «
+                        </button>
+                        <button className="join-item btn btn-neutral">{currentPage}</button>
+                        <button 
+                            className={`join-item btn ${currentPage === totalPages ? 'btn-disabled' : 'btn-neutral'}`}
+                            onClick={() => setCurrentPage(currentPage + 1)}
+                            disabled={currentPage === totalPages}
+                        >
+                            »
+                        </button>
+                        <button 
+                            className={`join-item btn ${currentPage === totalPages ? 'btn-disabled' : 'btn-neutral'}`}
+                            onClick={() => setCurrentPage(totalPages)}
+                            disabled={currentPage === totalPages}
+                        >
+                            Last »
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            
+            {/* Pagination info */}
+            {filteredClubs.length === 0 && (
+                <div className="text-center py-10 text-gray-500">
+                    No clubs found matching your criteria.
+                </div>
+            )}
         </div>
     );
 };

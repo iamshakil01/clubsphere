@@ -21,6 +21,11 @@ import Events from "../Components/Clubs/Events/Events";
 import ErrorPage from "../Components/ErrorPage/ErrorPage";
 import AdminRoutes from "./AdminRoutes";
 import EventsManagement from "../Pages/Dashboard/EventsManagement/EventsManagement";
+import FAQ from "../Components/FAQ/FAQ";
+import About from "../Components/About/About";
+import Contact from "../Components/Contact/Contact";
+import HelpCenter from "../Components/HelpCenter/HelpCenter";
+import MyClubs from "../Components/MyClubs/MyClubs";
 
 
 export const router = createBrowserRouter([
@@ -59,7 +64,27 @@ export const router = createBrowserRouter([
             },
             {
                 path: "clubs/:id",
-                element: <ClubDetails />,
+                element: <ClubDetails />,            
+            },
+            {
+                path: "faq",
+                element: <FAQ />
+            },
+            {
+                path: "about",
+                element: <About />
+            },
+            {
+                path: "contact",
+                element: <Contact />
+            },
+            {
+                path: "help",
+                element: <HelpCenter />
+            },
+            {
+                path: "my-clubs",
+                element: <MyClubs />
             }
         ]
     },

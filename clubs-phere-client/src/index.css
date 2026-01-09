@@ -9,19 +9,167 @@ body {
 @import "tailwindcss";
 @plugin "daisyui";
  @plugin "daisyui" {
-   themes: light --default, dark --prefersdark;
+   themes: ["light", "dark"];
  }
 
 
-@plugin "daisyui/theme" {
-  name: "light";
-  default: true;
-  --color-primary: #CAEB66;
+/* Light theme with better contrast */
+@theme {
+  --color-primary: #2E7D32;
+  --color-primary-focus: #1B5E20;
+  --color-primary-content: #ffffff;
   --color-secondary: #03373D;
+  --color-secondary-focus: #022127;
+  --color-secondary-content: #ffffff;
+  --color-neutral: #f9fafb;
+  --color-neutral-focus: #f3f4f6;
+  --color-base-100: #ffffff;
+  --color-base-200: #f9fafb;
+  --color-base-300: #f3f4f6;
+  --color-base-content: #1f2937;
+  --color-error: #dc2626;
+  --color-warning: #f59e0b;
+  --color-success: #22c55e;
+  --color-info: #3b82f6;
 }
 
+/* Dark theme with better contrast */
+@theme {
+  --color-primary: #4ade80;
+  --color-primary-focus: #22c55e;
+  --color-primary-content: #0f172a;
+  --color-secondary: #0ea5e9;
+  --color-secondary-focus: #0284c7;
+  --color-secondary-content: #0f172a;
+  --color-neutral: #1e293b;
+  --color-neutral-focus: #334155;
+  --color-base-100: #1f2937;
+  --color-base-200: #374151;
+  --color-base-300: #4b5563;
+  --color-base-content: #f9fafb;
+  --color-error: #f87171;
+  --color-warning: #fbbf24;
+  --color-success: #4ade80;
+  --color-info: #60a5fa;
+  /* Card specific */
+  --card-bg: #374151;
+  --card-border: #4b5563;
+  --card-text: #f9fafb;
+  /* Heading specific */
+  --heading-text: #f3f4f6;
+  --subheading-text: #e5e7eb;
+}
 
 body{
   @apply container mx-auto;
-  @apply bg-gray-50
+  @apply bg-base-100;
+  @apply p-4;
+}
+
+/* Consistent layout, spacing, and alignment throughout the project */
+
+/* Consistent card layout - same size, border radius, and visual style */
+.card-standard, .card {
+  @apply bg-base-100 border border-base-300 rounded-xl shadow-md p-6 w-full max-w-full;
+}
+
+/* Consistent button styles */
+.btn-standard, .btn {
+  @apply rounded-xl font-medium transition-colors duration-200 px-4 py-2;
+}
+
+/* Consistent form elements */
+.input-standard, .input, .select-standard, .select {
+  @apply rounded-xl border border-base-300 focus:ring-2 focus:ring-primary focus:border-transparent px-3 py-2 w-full;
+}
+
+/* Consistent section spacing */
+.section-standard, .section {
+  @apply py-12 px-4;
+}
+
+/* Consistent grid layouts */
+.grid-standard, .grid {
+  @apply gap-6;
+}
+
+/* Consistent flex layouts */
+.flex-standard, .flex {
+  @apply gap-6;
+}
+
+/* Consistent visual styles for all containers */
+.container, .box {
+  @apply rounded-xl border border-base-300 shadow-sm;
+}
+
+/* Spacing, padding, and margin classes follow Tailwind defaults */
+
+/* Dark theme enhancements */
+[data-theme="dark"] {
+  --card-bg: #374151;
+  --card-border: #4b5563;
+  --card-text: #f9fafb;
+  --heading-text: #f3f4f6;
+  --subheading-text: #e5e7eb;
+}
+
+/* Card styling for better visibility */
+.card {
+  @apply bg-base-100 border border-base-300 rounded-lg;
+}
+
+/* Heading styling */
+h1, h2, h3, h4, h5, h6 {
+  @apply text-base-content;
+}
+
+/* Ensure text contrast */
+.text-gray-700 {
+  @apply dark:text-gray-300;
+}
+.text-gray-800 {
+  @apply dark:text-gray-200;
+}
+.text-gray-900 {
+  @apply dark:text-white;
+}
+
+/* Specific dark mode adjustments */
+[data-theme="dark"] .bg-white {
+  @apply bg-base-200;
+}
+
+[data-theme="dark"] .text-gray-700 {
+  @apply text-gray-300;
+}
+
+[data-theme="dark"] .text-gray-800 {
+  @apply text-gray-200;
+}
+
+[data-theme="dark"] .text-gray-900 {
+  @apply text-white;
+}
+
+/* Card and container specific */
+[data-theme="dark"] .bg-gray-50 {
+  @apply bg-base-200;
+}
+
+[data-theme="dark"] .bg-gray-100 {
+  @apply bg-base-200;
+}
+
+/* Table styling for better visibility */
+[data-theme="dark"] table {
+  @apply text-base-content;
+}
+
+[data-theme="dark"] th {
+  @apply bg-base-300;
+}
+
+[data-theme="dark"] td {
+  @apply border-b border-base-300;
 }

@@ -61,6 +61,7 @@ const CreateEvent = ({ clubId }) => {
                     <input
                         type="text"
                         className="w-full border px-3 py-2 rounded"
+                        placeholder="e.g., Annual Photography Exhibition"
                         {...register('title', { required: 'Title is required' })}
                     />
                     {errors.title && (
@@ -91,6 +92,7 @@ const CreateEvent = ({ clubId }) => {
                     <input
                         type="text"
                         className="w-full border px-3 py-2 rounded"
+                        placeholder="e.g., Community Center Hall A"
                         {...register('location', { required: 'Location is required' })}
                     />
                     {errors.location && (
@@ -138,6 +140,7 @@ const CreateEvent = ({ clubId }) => {
                             type="number"
                             min="0"
                             className="w-full border px-3 py-2 rounded"
+                            placeholder="e.g., 15"
                             {...register('amount', {
                                 required: 'Amount is required when paid',
                                 min: {

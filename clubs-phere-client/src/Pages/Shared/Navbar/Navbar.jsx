@@ -3,6 +3,7 @@ import { Link, NavLink } from "react-router";
 import Logo from "../../../Components/Logo/Logo";
 import useAuth from "../../../hooks/useAuth";
 import useRole from "../../../Hooks/useRole";
+import ThemeToggle from "../../../Components/ThemeToggle/ThemeToggle";
 
 const Navbar = () => {
     const { user, logOut } = useAuth();
@@ -53,6 +54,28 @@ const Navbar = () => {
                     Events
                 </NavLink>
             </li>
+            <li>
+                <NavLink to="/faq" className={navLinkClass}>
+                    FAQ
+                </NavLink>
+            </li>
+            <li>
+                <NavLink to="/about" className={navLinkClass}>
+                    About
+                </NavLink>
+            </li>
+            <li>
+                <NavLink to="/help" className={navLinkClass}>
+                    Help
+                </NavLink>
+            </li>
+            {user && (
+                <li>
+                    <NavLink to="/my-clubs" className={navLinkClass}>
+                        My Clubs
+                    </NavLink>
+                </li>
+            )}
         </>
     );
 
@@ -119,6 +142,7 @@ const Navbar = () => {
             </div>
 
             <div className="navbar-end space-x-4">
+                <ThemeToggle />
                 {user ? (
                     <div className="dropdown dropdown-end">
                         <label

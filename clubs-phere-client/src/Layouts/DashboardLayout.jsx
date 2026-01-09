@@ -5,6 +5,7 @@ import { IoManSharp } from "react-icons/io5";
 import { GiCard10Clubs } from "react-icons/gi";
 import { FcApprove } from "react-icons/fc";
 import useRole from "../hooks/useRole";
+import ThemeToggle from "../Components/ThemeToggle/ThemeToggle";
 
 
 
@@ -35,8 +36,11 @@ const DashboardLayout = () => {
           </svg>
         </button>
         <div className="text-xl sm:text-2xl font-bold">Dashboard</div>
-        <div className="text-xs sm:text-sm font-semibold capitalize">
-          {role === "clubManager" ? "Club Manager" : role}
+        <div className="flex items-center space-x-4">
+          <ThemeToggle />
+          <div className="text-xs sm:text-sm font-semibold capitalize">
+            {role === "clubManager" ? "Club Manager" : role}
+          </div>
         </div>
       </nav>
 

@@ -75,7 +75,7 @@ const Register = () => {
                                 type="text"
                                 {...register('name', { required: true })}
                                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-400 transition duration-150"
-                                placeholder="Your Name"
+                                placeholder="e.g., John Doe"
                             />
                             {errors.name?.type === 'required' && <p className='text-red-500 text-xs mt-1'>Name Is Required</p>}
                         </div>
@@ -97,7 +97,7 @@ const Register = () => {
                                 type="email"
                                 {...register('email', { required: true })}
                                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-400 transition duration-150"
-                                placeholder="Email"
+                                placeholder="e.g., john.doe@example.com"
                             />
                             {errors.email?.type === 'required' && <p className='text-red-500 text-xs mt-1'>Email Is Required</p>}
                         </div>
@@ -112,7 +112,7 @@ const Register = () => {
                                     pattern: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[#?!@$%^&*-]).{8,}$/
                                 })}
                                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-400 transition duration-150"
-                                placeholder="Password"
+                                placeholder="Enter a strong password..."
                             />
 
                             {errors.password?.type === 'required' && <p className='text-red-500 text-xs mt-1'>Password is Required</p>}

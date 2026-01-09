@@ -178,14 +178,14 @@ const ClubsManagement = () => {
                         )}
 
                         <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
-                            <input {...register("clubName")} className="input" />
-                            <input {...register("description")} className="input" />
-                            <input {...register("location")} className="input" />
-                            <input type="number" {...register("membershipFee")} className="input" />
-                            <input {...register("category")} className="input" />
+                            <input {...register("clubName")} placeholder="e.g., Photography Enthusiasts Club" className="input" />
+                            <input {...register("description")} placeholder="Describe the club..." className="input" />
+                            <input {...register("location")} placeholder="e.g., Downtown Community Center" className="input" />
+                            <input type="number" {...register("membershipFee")} placeholder="e.g., 25" className="input" />
+                            <input {...register("category")} placeholder="e.g., Photography" className="input" />
                             <input
                                 {...register("bannerImage")}
-                                placeholder="Banner Image URL"
+                                placeholder="e.g., https://images.unsplash.com/photo-1542500429-4116073fc98f"
                                 className="input"
                             />
 
