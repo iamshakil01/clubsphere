@@ -26,6 +26,8 @@ import About from "../Components/About/About";
 import Contact from "../Components/Contact/Contact";
 import HelpCenter from "../Components/HelpCenter/HelpCenter";
 import MyClubs from "../Components/MyClubs/MyClubs";
+import PrivacyPolicy from "../Pages/Shared/PrivacyPolicy/PrivacyPolicy";
+import TermsOfService from "../Pages/Shared/TermsOfService/TermsOfService";
 
 
 export const router = createBrowserRouter([
@@ -85,6 +87,14 @@ export const router = createBrowserRouter([
             {
                 path: "my-clubs",
                 element: <MyClubs />
+            },
+            {
+                path: "privacy",
+                element: <PrivacyPolicy />
+            },
+            {
+                path: "terms",
+                element: <TermsOfService />
             }
         ]
     },

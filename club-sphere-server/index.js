@@ -64,6 +64,7 @@ async function run() {
         const eventsCollections = db.collection('events');
         const paymentCollections = db.collection('payments');
         const eventRegistrationsCollection = db.collection('eventRegistrations');
+        const reviewsCollection = db.collection('reviews');
 
 
         // ---------------------Events APIs--------------------
@@ -160,6 +161,81 @@ async function run() {
             } catch (error) {
                 console.error('Error in /admin overview:', error);
                 res.status(500).send({ message: 'Failed to fetch admin stats' });
+            }
+        });
+
+
+        // ---------------------Reviews APIs--------------------
+        app.post('/clubs/:id/reviews', verifyFBToken, async (req, res) => {
+            try {
+                const clubId = req.params.id;
+                const { rating, comment } = req.body;
+                
+                // Validate input
+                if (!rating || rating < 1 || rating > 5 || !comment || comment.trim() === '') {
+                    return res.status(400).send({ message: 'Rating (1-5) and comment are required' });
+                }
+                
+                // Check if club exists
+                const club = await clubsCollections.findOne({ _id: new ObjectId(clubId) });
+                if (!club) {
+                    return res.status(404).send({ message: 'Club not found' });
+                }
+                
+                // Check if user exists and get user info
+                const user = await userCollections.findOne({ email: req.decoded_email });
+                if (!user) {
+                    return res.status(404).send({ message: 'User not found' });
+                }
+                
+                // Check if user already reviewed this club
+                const existingReview = await reviewsCollection.findOne({
+                    clubId: clubId,
+                    reviewerEmail: req.decoded_email
+                });
+                
+                if (existingReview) {
+                    return res.status(400).send({ message: 'You have already reviewed this club' });
+                }
+                
+                // Create review object
+                const review = {
+                    clubId: clubId,
+                    reviewerEmail: req.decoded_email,
+                    reviewerName: user.displayName || user.name || 'Anonymous',
+                    rating: parseInt(rating),
+                    comment: comment.trim(),
+                    createdAt: new Date()
+                };
+                
+                const result = await reviewsCollection.insertOne(review);
+                res.status(201).send(result);
+            } catch (error) {
+                console.error('Error creating review:', error);
+                res.status(500).send({ message: 'Failed to create review' });
+            }
+        });
+        
+        app.get('/clubs/:id/reviews', async (req, res) => {
+            try {
+                const clubId = req.params.id;
+                
+                // Check if club exists
+                const club = await clubsCollections.findOne({ _id: new ObjectId(clubId) });
+                if (!club) {
+                    return res.status(404).send({ message: 'Club not found' });
+                }
+                
+                // Get all reviews for the club
+                const reviews = await reviewsCollection
+                    .find({ clubId: clubId })
+                    .sort({ createdAt: -1 })
+                    .toArray();
+                
+                res.send(reviews);
+            } catch (error) {
+                console.error('Error fetching reviews:', error);
+                res.status(500).send({ message: 'Failed to fetch reviews' });
             }
         });
 

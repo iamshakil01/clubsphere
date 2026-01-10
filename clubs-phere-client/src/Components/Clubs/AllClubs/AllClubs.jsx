@@ -8,12 +8,19 @@ const AllClubs = () => {
     const [category, setCategory] = useState("all");
     const [type, setType] = useState("all");
     const [currentPage, setCurrentPage] = useState(1);
+    const [loading, setLoading] = useState(true);
     const clubsPerPage = 10; // Show 10 clubs per page
     const axiosSecure = useAxiosSecure()
-
+        
     useEffect(() => {
         axiosSecure.get("/clubs")
-            .then(res => setClubs(res.data));
+            .then(res => {
+                setClubs(res.data);
+                setLoading(false);
+            })
+            .catch(() => {
+                setLoading(false);
+            });
     }, [axiosSecure]);
 
     const filteredClubs = clubs.filter(club => {
@@ -75,60 +82,90 @@ const AllClubs = () => {
             </div>
 
          {/* Club Cards */}
-<div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-  {currentClubs.map(club => (
-    <div
-      key={club._id}
-      className="group relative bg-white rounded-3xl shadow-lg border border-transparent hover:border-green-200 overflow-hidden transform hover:scale-105 transition-all duration-300"
-    >
-      {/* Image */}
-      <div className="relative h-52 overflow-hidden">
-        <img
-          src={club.image}
-          alt={club.clubName}
-          className="w-full h-full object-cover brightness-90 group-hover:brightness-100 transition"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/40 opacity-0 group-hover:opacity-50 transition"></div>
-      </div>
-
-      {/* Content */}
-      <div className="p-6 space-y-3">
-        <h3 className="text-2xl font-bold text-gray-800 group-hover:text-green-600 transition-colors underline-offset-2 group-hover:underline">
-          {club.clubName}
-        </h3>
-
-        <p className="text-sm text-gray-600 line-clamp-3">
-          {club.description}
-        </p>
-
-        <div className="flex items-center justify-between">
-          <span className="text-xs uppercase font-semibold text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
-            {club.category}
-          </span>
-
-          <span
-            className={`text-sm font-semibold ${
-              club.membershipFee === 0
-                ? "text-green-600 bg-green-100 px-2 py-1 rounded-full"
-                : "text-yellow-700 bg-yellow-100 px-2 py-1 rounded-full"
-            }`}
-          >
-            {club.membershipFee === 0 ? "Free" : `$${club.membershipFee}`}
-          </span>
+<div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+  {loading ? (
+    // Skeleton Loader
+    Array.from({ length: 8 }).map((_, index) => (
+      <div
+        key={`skeleton-${index}`}
+        className="group relative bg-white rounded-3xl shadow-lg border border-transparent overflow-hidden flex flex-col h-full"
+      >
+        {/* Skeleton Image */}
+        <div className="relative h-48 bg-gray-200 animate-pulse flex-shrink-0">
+          <div className="w-full h-full bg-gradient-to-r from-gray-200 to-gray-300"></div>
         </div>
 
-        <Link
-          to={`/clubs/${club._id}`}
-          className="inline-block w-full text-center text-white bg-green-600 hover:bg-green-700 font-semibold py-2 rounded-xl transition transform hover:-translate-y-0.5"
-        >
-          View Details
-        </Link>
+        {/* Skeleton Content */}
+        <div className="p-4 space-y-3 flex-grow">
+          <div className="h-5 bg-gray-200 rounded animate-pulse"></div>
+          <div className="space-y-2">
+            <div className="h-2 bg-gray-200 rounded animate-pulse"></div>
+            <div className="h-2 bg-gray-200 rounded animate-pulse w-5/6"></div>
+            <div className="h-2 bg-gray-200 rounded animate-pulse w-4/6"></div>
+          </div>
+          <div className="flex items-center justify-between pt-1">
+            <div className="h-3 w-12 bg-gray-200 rounded-full animate-pulse"></div>
+            <div className="h-3 w-10 bg-gray-200 rounded-full animate-pulse"></div>
+          </div>
+          <div className="h-6 bg-gray-200 rounded-xl animate-pulse mt-1"></div>
+        </div>
       </div>
+    ))
+  ) : (
+    currentClubs.map(club => (
+      <div
+        key={club._id}
+        className="group relative bg-white rounded-3xl shadow-lg border border-transparent hover:border-green-200 overflow-hidden transform hover:scale-105 transition-all duration-300 flex flex-col h-full"
+      >
+        {/* Image */}
+        <div className="relative h-48 overflow-hidden flex-shrink-0">
+          <img
+            src={club.image}
+            alt={club.clubName}
+            className="w-full h-full object-cover brightness-90 group-hover:brightness-100 transition"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 opacity-0 group-hover:opacity-50 transition"></div>
+        </div>
 
-      {/* Decorative Accent */}
-      <div className="absolute -right-6 -top-6 w-24 h-24 bg-green-200 rounded-full blur-2xl opacity-30 group-hover:opacity-50 transition"></div>
-    </div>
-  ))}
+        {/* Content */}
+        <div className="p-4 flex flex-col flex-grow">
+          <h3 className="text-xl font-bold text-gray-800 group-hover:text-green-600 transition-colors underline-offset-2 group-hover:underline mb-2">
+            {club.clubName}
+          </h3>
+
+          <p className="text-xs text-gray-600 mb-3 flex-grow">
+            {club.description.length > 80 ? `${club.description.substring(0, 80)}...` : club.description}
+          </p>
+
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs uppercase font-semibold text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+              {club.category}
+            </span>
+
+            <span
+              className={`text-xs font-semibold ${
+                club.membershipFee === 0
+                  ? "text-green-600 bg-green-100 px-2 py-1 rounded-full"
+                  : "text-yellow-700 bg-yellow-100 px-2 py-1 rounded-full"
+              }`}
+            >
+              {club.membershipFee === 0 ? "Free" : `$${club.membershipFee}`}
+            </span>
+          </div>
+
+          <Link
+            to={`/clubs/${club._id}`}
+            className="inline-block w-full text-center text-white bg-green-600 hover:bg-green-700 font-semibold py-2 rounded-xl transition transform hover:-translate-y-0.5 mt-auto"
+          >
+            View Details
+          </Link>
+        </div>
+
+        {/* Decorative Accent */}
+        <div className="absolute -right-6 -top-6 w-24 h-24 bg-green-200 rounded-full blur-2xl opacity-30 group-hover:opacity-50 transition"></div>
+      </div>
+    ))
+  )}
 </div>
 
             {/* Pagination */}

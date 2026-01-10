@@ -11,10 +11,12 @@ const Footer = () => {
                     {/* Brand Section */}
                     <div className="space-y-4">
                         <div className="flex items-center justify-center md:justify-start">
-                            <Logo className="w-36 h-auto" />
+                            <Link to="/" className="flex items-center">
+                                <Logo className="w-36 h-auto" />
+                            </Link>
                         </div>
                         <p className="text-center md:text-left text-gray-400 text-lg font-medium">
-                            Join Our <span className="text-white font-bold">ClubSphere</span><br /> Connecting passionate individuals since 2015
+                            Join Our <span className="text-white font-bold !text-white dark:text-white">ClubSphere</span><br /> Connecting passionate individuals since 2015
                         </p>
                         <div className="flex justify-center md:justify-start space-x-4 sm:space-x-5 text-gray-400">
                             <a href="https://linkedin.com/in/iamshakil01" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors duration-300 hover:scale-110">
@@ -124,6 +126,10 @@ const Footer = () => {
                     <div className="flex space-x-6 mt-4 md:mt-0">
                         <Link to="/privacy" className="text-sm text-gray-400 hover:text-green-400 transition-colors duration-300">
                             Privacy Policy
+                        </Link>
+                        
+                        <Link to="/terms" className="text-sm text-gray-400 hover:text-green-400 transition-colors duration-300">
+                            Terms of Service
                         </Link>
 
                         <Link to="/contact" className="text-sm text-gray-400 hover:text-green-400 transition-colors duration-300">

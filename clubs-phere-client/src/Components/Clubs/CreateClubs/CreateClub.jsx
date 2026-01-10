@@ -57,7 +57,7 @@ const CreateClub = () => {
           <label className="font-medium">Club Name</label>
           <input
             {...register("clubName", { required: 'Club Name is required' })}
-            placeholder="e.g., Photography Enthusiasts Club"
+            placeholder="e.g., Photography Enthusiasts Club, Tech Innovators Society, Sports Champions United"
             className="input input-bordered w-full mt-1"
           />
           {errors.clubName && (
@@ -70,7 +70,7 @@ const CreateClub = () => {
           <label className="font-medium">Club Banner Image URL</label>
           <input
             {...register("image", { required: 'Image URL is required' })}
-            placeholder="e.g., https://images.unsplash.com/photo-1542500429-4116073fc98f"
+            placeholder="e.g., https://images.unsplash.com/photo-1542500429-4116073fc98f (club activity, meeting, or relevant image)"
             className="input input-bordered w-full mt-1"
           />
           {errors.image && (
@@ -93,7 +93,7 @@ const CreateClub = () => {
           <textarea
             {...register("description", { required: 'Description is required' })}
             rows="4"
-            placeholder="Describe your club's mission, activities, meeting schedule, and goals..."
+            placeholder="Share your club's mission, vision, activities, meeting schedule, goals, and what makes it special. Describe what members will gain from joining and any unique features your club offers..."
             className="textarea textarea-bordered w-full mt-1"
           ></textarea>
           {errors.description && (

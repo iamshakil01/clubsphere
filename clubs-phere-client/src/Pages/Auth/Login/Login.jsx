@@ -6,10 +6,45 @@ import useAuth from '../../../Hooks/useAuth';
 
 
 const Login = () => {
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm();
+  const { register, handleSubmit, formState: { errors, isSubmitting }, setValue } = useForm();
   const { signInUser } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+  
+  const handleDemoLoginDirect = async (demoType = 'member') => {
+    let demoEmail, demoPassword;
+    
+    if (demoType === 'admin') {
+      // Demo admin credentials
+      demoEmail = 'member@1.com';
+      demoPassword = 'A123456a!';
+    } else if (demoType === 'manager') {
+      // Demo club manager credentials
+      demoEmail = 'mara@kara.com';
+      demoPassword = 'A123456a!';
+    } else {
+      // Default demo member credentials
+      demoEmail = 'mah@muda.com';
+      demoPassword = 'A123456a!';
+    }
+    
+    // Auto-fill the form fields
+    setValue('email', demoEmail);
+    setValue('password', demoPassword);
+    
+    // Try to sign in with demo credentials
+    try {
+      await signInUser(demoEmail, demoPassword);
+      navigate(location?.state || '/');
+    } catch (error) {
+      console.error('Demo login failed:', error);
+      alert('Demo user not available. Please register first or use social login.');
+      
+      // Auto-fill the form fields for manual entry
+      setValue('email', demoEmail);
+      setValue('password', demoPassword);
+    }
+  };
 
   const handleLogin = (data) => {
     console.log('after login', data);
@@ -77,6 +112,42 @@ const Login = () => {
               disabled={isSubmitting}
             >
               Login
+            </button>
+            
+            <button
+              type="button"
+              onClick={() => handleDemoLoginDirect('member')}
+              disabled={isSubmitting}
+              className="w-full py-3 px-4 rounded-lg text-white font-bold mt-3 
+                                       bg-gradient-to-r from-purple-500 to-indigo-500 
+                                       shadow-lg hover:shadow-xl transition duration-200 
+                                       transform hover:scale-[1.005] active:scale-[0.99] disabled:opacity-70"
+            >
+              Demo Member Login
+            </button>
+            
+            <button
+              type="button"
+              onClick={() => handleDemoLoginDirect('admin')}
+              disabled={isSubmitting}
+              className="w-full py-3 px-4 rounded-lg text-white font-bold mt-3 
+                                       bg-gradient-to-r from-orange-500 to-red-500 
+                                       shadow-lg hover:shadow-xl transition duration-200 
+                                       transform hover:scale-[1.005] active:scale-[0.99] disabled:opacity-70"
+            >
+              Demo Admin Login
+            </button>
+            
+            <button
+              type="button"
+              onClick={() => handleDemoLoginDirect('manager')}
+              disabled={isSubmitting}
+              className="w-full py-3 px-4 rounded-lg text-white font-bold mt-3 
+                                       bg-gradient-to-r from-green-500 to-teal-500 
+                                       shadow-lg hover:shadow-xl transition duration-200 
+                                       transform hover:scale-[1.005] active:scale-[0.99] disabled:opacity-70"
+            >
+              Demo Manager Login
             </button>
           </fieldset>
 
