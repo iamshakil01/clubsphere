@@ -1,10 +1,70 @@
-import React from 'react';
+import React, { useState } from 'react';
 import useAuth from '../../hooks/useAuth';
 import useRole from '../../hooks/useRole';
+import useAxiosSecure from '../../hooks/useAxiosSecure';
+import Swal from 'sweetalert2';
 
 const Profile = () => {
-    const { user } = useAuth();
+    const { user, updateUserProfile } = useAuth();
     const { role } = useRole();
+    const axiosSecure = useAxiosSecure();
+    
+    const [isEditing, setIsEditing] = useState(false);
+    const [formData, setFormData] = useState({
+        displayName: '',
+        photoURL: ''
+    });
+    
+    // Update formData when user changes
+    React.useEffect(() => {
+        setFormData({
+            displayName: user?.displayName || '',
+            photoURL: user?.photoURL || ''
+        });
+    }, [user]);
+    
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+    
+    const handleUpdateProfile = async (e) => {
+        e.preventDefault();
+        
+        try {
+            // Update user profile in Firebase
+            await updateUserProfile({
+                displayName: formData.displayName,
+                photoURL: formData.photoURL
+            });
+            
+            // Update user data in backend database
+            await axiosSecure.patch(`/users/${user.email}`, {
+                displayName: formData.displayName,
+                photoURL: formData.photoURL
+            });
+            
+            Swal.fire({
+                title: 'Success!',
+                text: 'Profile updated successfully!',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
+            
+            setIsEditing(false);
+        } catch (error) {
+            console.error('Error updating profile:', error);
+            Swal.fire({
+                title: 'Error!',
+                text: 'Failed to update profile. Please try again.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        }
+    };
 
     return (
         <div className="min-h-screen bg-gray-100 py-8 px-4">
@@ -38,7 +98,17 @@ const Profile = () => {
                         <div className="space-y-2">
                             <div>
                                 <h3 className="text-2xl font-semibold text-gray-700">Full Name</h3>
-                                <p className="text-3xl font-bold text-gray-900">{user.displayName}</p>
+                                {isEditing ? (
+                                    <input
+                                        type="text"
+                                        name="displayName"
+                                        value={formData.displayName}
+                                        onChange={handleInputChange}
+                                        className="text-3xl font-bold text-gray-900 w-full border-b-2 border-gray-300 focus:border-blue-500 focus:outline-none"
+                                    />
+                                ) : (
+                                    <p className="text-3xl font-bold text-gray-900">{user.displayName}</p>
+                                )}
                             </div>
 
                             <div>
@@ -52,6 +122,55 @@ const Profile = () => {
                                     {user.metadata?.creationTime}
                                 </p>
                             </div>
+                            
+                            <div>
+                                <h3 className="text-2xl font-semibold text-gray-700">Profile Picture URL</h3>
+                                {isEditing ? (
+                                    <input
+                                        type="text"
+                                        name="photoURL"
+                                        value={formData.photoURL}
+                                        onChange={handleInputChange}
+                                        className="text-md text-gray-900 w-full border-b-2 border-gray-300 focus:border-blue-500 focus:outline-none"
+                                        placeholder="Enter image URL"
+                                    />
+                                ) : (
+                                    <p className="text-md text-gray-900 truncate">{user.photoURL || 'No profile picture'}</p>
+                                )}
+                            </div>
+                        </div>
+                        
+                        {/* Edit Controls */}
+                        <div className="flex flex-wrap gap-4 mt-6">
+                            {isEditing ? (
+                                <>
+                                    <button
+                                        onClick={handleUpdateProfile}
+                                        className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-semibold"
+                                    >
+                                        Save Changes
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            setIsEditing(false);
+                                            setFormData({
+                                                displayName: user.displayName || '',
+                                                photoURL: user.photoURL || ''
+                                            });
+                                        }}
+                                        className="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors font-semibold"
+                                    >
+                                        Cancel
+                                    </button>
+                                </>
+                            ) : (
+                                <button
+                                    onClick={() => setIsEditing(true)}
+                                    className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold"
+                                >
+                                    Edit Profile
+                                </button>
+                            )}
                         </div>
 
                         {/* Manage Info */}
