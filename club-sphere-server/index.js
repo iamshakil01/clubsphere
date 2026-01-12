@@ -341,12 +341,42 @@ async function run() {
 
         app.patch('/users/:id', async (req, res) => {
             const id = req.params.id;
-            const roleInfo = req.body;
-            const result = await userCollections.updateOne(
-                { _id: new ObjectId(id) },
-                { $set: { role: roleInfo.role } }
-            );
-            res.send(result);
+            const updateInfo = req.body;
+            
+            // Check if id is an email (contains @) or a MongoDB ObjectId
+            let query;
+            if (id.includes('@')) {
+                // Update by email
+                query = { email: id };
+            } else {
+                // Update by ID
+                query = { _id: new ObjectId(id) };
+            }
+            
+            // Check if the update contains role info (admin update) or profile info (user update)
+            if (updateInfo.role !== undefined) {
+                // Admin updating user role
+                const result = await userCollections.updateOne(
+                    query,
+                    { $set: { role: updateInfo.role } }
+                );
+                res.send(result);
+            } else {
+                // User updating their own profile
+                const updateFields = {};
+                if (updateInfo.displayName !== undefined) {
+                    updateFields.displayName = updateInfo.displayName;
+                }
+                if (updateInfo.photoURL !== undefined) {
+                    updateFields.photoURL = updateInfo.photoURL;
+                }
+                
+                const result = await userCollections.updateOne(
+                    query,
+                    { $set: updateFields }
+                );
+                res.send(result);
+            }
         });
 
         app.get('/users/:email/role', verifyFBToken, async (req, res) => {

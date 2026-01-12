@@ -1,4 +1,5 @@
 import React from "react";
+import { motion } from "framer-motion";
 import { useNavigate } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
@@ -22,18 +23,39 @@ const EventsManagement = ({ clubId }) => {
     if (isError) return <div className="text-red-500 text-center text-lg font-semibold">Error: {error.message}</div>;
 
     return (
-        <div className="max-w-7xl mx-auto p-6 space-y-6">
-            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-                <h2 className="text-3xl font-extrabold text-gray-800">
+        <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+            className="max-w-7xl mx-auto p-6 space-y-6"
+        >
+            <motion.div 
+                initial={{ y: -20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.6 }}
+                className="flex flex-col md:flex-row justify-between items-center gap-4"
+            >
+                <motion.h2 
+                    initial={{ scale: 0.95 }}
+                    animate={{ scale: 1 }}
+                    transition={{ delay: 0.2, duration: 0.5 }}
+                    className="text-3xl font-extrabold text-gray-800"
+                >
                     {clubId ? "Club Events" : "All Events"} ({events.length})
-                </h2>
-                <button
+                </motion.h2>
+                <motion.button
+                    initial={{ scale: 0.95 }}
+                    animate={{ scale: 1 }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    transition={{ delay: 0.3, duration: 0.3 }}
                     onClick={() => navigate("/create-events")}
                     className="bg-indigo-600 text-white px-6 py-2 rounded-lg text-lg font-semibold hover:bg-indigo-500 transition"
                 >
                     + Create Event
-                </button>
-            </div>
+                </motion.button>
+            </motion.div>
 
             {events.length === 0 ? (
                 <p className="text-center text-gray-600 text-lg">No events found.</p>
@@ -85,7 +107,7 @@ const EventsManagement = ({ clubId }) => {
                     </table>
                 </div>
             )}
-        </div>
+        </motion.div>
     );
 };
 

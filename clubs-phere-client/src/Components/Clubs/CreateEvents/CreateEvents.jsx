@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
 import Swal from 'sweetalert2';
@@ -52,9 +53,28 @@ const CreateEvent = ({ clubId }) => {
     };
 
     return (
-        <div className="max-w-md mx-auto p-4 shadow-md bg-white rounded">
-            <h2 className="text-2xl font-semibold mb-4">Create Event</h2>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.5 }}
+            className="max-w-md mx-auto p-4 shadow-md bg-white rounded"
+        >
+            <motion.h2 
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2, duration: 0.4 }}
+                className="text-2xl font-semibold mb-4"
+            >
+                Create Event
+            </motion.h2>
+            <motion.form 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.3, duration: 0.5 }}
+                onSubmit={handleSubmit(onSubmit)} 
+                className="space-y-4"
+            >
                 {/* Title */}
                 <div>
                     <label className="block font-medium mb-1">Event Title</label>
@@ -164,8 +184,8 @@ const CreateEvent = ({ clubId }) => {
                 >
                     {isSubmitting ? 'Creating...' : 'Create Event'}
                 </button>
-            </form>
-        </div>
+            </motion.form>
+        </motion.div>
     );
 };
 

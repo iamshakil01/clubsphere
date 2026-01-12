@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import { motion } from "framer-motion";
 
 const AllClubs = () => {
     const [clubs, setClubs] = useState([]);
@@ -40,16 +41,38 @@ const AllClubs = () => {
     const totalPages = Math.ceil(filteredClubs.length / clubsPerPage);
 
     return (
-        <div className="max-w-7xl mx-auto px-4 py-10">
-            <h1 className="text-3xl font-bold mb-6">Explore Clubs</h1>
+        <motion.div 
+            className="max-w-7xl mx-auto px-4 py-10"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+        >
+            <motion.h1 
+                className="text-3xl font-bold mb-6"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+            >
+                Explore Clubs
+            </motion.h1>
             
             {/* Showing results count */}
-            <div className="mb-4 text-gray-600">
+            <motion.div 
+                className="mb-4 text-gray-600"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.3 }}
+            >
                 Showing {indexOfFirstClub + 1}-{Math.min(indexOfLastClub, filteredClubs.length)} of {filteredClubs.length} clubs
-            </div>
+            </motion.div>
 
             {/* Filters */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8">
+            <motion.div 
+                className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+            >
                 <input
                     type="text"
                     placeholder="Search clubs..."
@@ -79,16 +102,25 @@ const AllClubs = () => {
                     <option value="free">Free</option>
                     <option value="paid">Paid</option>
                 </select>
-            </div>
+            </motion.div>
 
          {/* Club Cards */}
-<div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+<motion.div 
+  className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+  initial={{ opacity: 0 }}
+  animate={{ opacity: 1 }}
+  transition={{ delay: 0.5 }}
+>
   {loading ? (
     // Skeleton Loader
     Array.from({ length: 8 }).map((_, index) => (
-      <div
+      <motion.div
         key={`skeleton-${index}`}
         className="group relative bg-white rounded-3xl shadow-lg border border-transparent overflow-hidden flex flex-col h-full"
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.4, delay: 0.1 * index }}
+        whileHover={{ y: -5 }}
       >
         {/* Skeleton Image */}
         <div className="relative h-48 bg-gray-200 animate-pulse flex-shrink-0">
@@ -109,13 +141,17 @@ const AllClubs = () => {
           </div>
           <div className="h-6 bg-gray-200 rounded-xl animate-pulse mt-1"></div>
         </div>
-      </div>
+      </motion.div>
     ))
   ) : (
-    currentClubs.map(club => (
-      <div
+    currentClubs.map((club, index) => (
+      <motion.div
         key={club._id}
         className="group relative bg-white rounded-3xl shadow-lg border border-transparent hover:border-green-200 overflow-hidden transform hover:scale-105 transition-all duration-300 flex flex-col h-full"
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.4, delay: 0.1 * index }}
+        whileHover={{ y: -5 }}
       >
         {/* Image */}
         <div className="relative h-48 overflow-hidden flex-shrink-0">
@@ -163,14 +199,19 @@ const AllClubs = () => {
 
         {/* Decorative Accent */}
         <div className="absolute -right-6 -top-6 w-24 h-24 bg-green-200 rounded-full blur-2xl opacity-30 group-hover:opacity-50 transition"></div>
-      </div>
+      </motion.div>
     ))
   )}
-</div>
+</motion.div>
 
             {/* Pagination */}
             {totalPages > 1 && (
-                <div className="flex justify-center mt-10">
+                <motion.div 
+                    className="flex justify-center mt-10"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.6 }}
+                >
                     <div className="join">
                         <button 
                             className={`join-item btn ${currentPage === 1 ? 'btn-disabled' : 'btn-neutral'}`}
@@ -202,17 +243,22 @@ const AllClubs = () => {
                             Last »
                         </button>
                     </div>
-                </div>
+                </motion.div>
             )}
 
             
             {/* Pagination info */}
             {filteredClubs.length === 0 && (
-                <div className="text-center py-10 text-gray-500">
+                <motion.div 
+                    className="text-center py-10 text-gray-500"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.5 }}
+                >
                     No clubs found matching your criteria.
-                </div>
+                </motion.div>
             )}
-        </div>
+        </motion.div>
     );
 };
 

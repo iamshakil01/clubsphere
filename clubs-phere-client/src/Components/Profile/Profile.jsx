@@ -83,7 +83,12 @@ const Profile = () => {
                             <img
                                 src={user.photoURL || "https://i.ibb.co/6rW81yM/user-default.png"}
                                 alt="Profile Avatar"
-                                className="object-cover w-full h-full"
+                                className="w-full h-full object-cover object-center bg-gray-200"
+                                style={{minWidth: '100%', minHeight: '100%'}}
+                                onError={(e) => {
+                                    e.target.onerror = null;
+                                    e.target.src = "https://i.ibb.co/6rW81yM/user-default.png";
+                                }}
                             />
                         </div>
                         <p className="mt-4 text-lg font-semibold text-gray-800 uppercase bg-yellow-400 px-4 py-2 rounded-full shadow-inner">

@@ -3,6 +3,7 @@ import Banner from "../Banner/Banner";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 import FeaturedClub from "../Banner/FeaturedClub/FeaturedClub";
+import { motion } from "framer-motion";
 
 const Home = () => {
     const axiosSecure = useAxiosSecure();
@@ -16,21 +17,42 @@ const Home = () => {
     });
 
 
-
     return (
         <div className="bg-white">
-            <Banner />
-            <FeaturedClub></FeaturedClub>
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6 }}
+            >
+                <Banner />
+                <FeaturedClub></FeaturedClub>
+            </motion.div>
 
-            <section className="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8 sm:mb-10">Popular Clubs</h2>
+            <motion.section 
+                className="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+            >
+                <motion.h2 
+                    className="text-2xl sm:text-3xl font-bold text-center mb-8 sm:mb-10"
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.3 }}
+                >
+                    Popular Clubs
+                </motion.h2>
 
                 {isLoading ? (
                     <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                         {Array.from({ length: 8 }).map((_, index) => (
-                            <div
+                            <motion.div
                                 key={`skeleton-${index}`}
                                 className="group relative bg-white rounded-3xl shadow-lg border border-transparent overflow-hidden flex flex-col h-full"
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ duration: 0.4, delay: 0.1 * index }}
+                                whileHover={{ y: -5 }}
                             >
                                 {/* Skeleton Image */}
                                 <div className="relative h-48 bg-gray-200 animate-pulse flex-shrink-0">
@@ -51,15 +73,19 @@ const Home = () => {
                                     </div>
                                     <div className="h-6 bg-gray-200 rounded-xl animate-pulse mt-1"></div>
                                 </div>
-                            </div>
+                            </motion.div>
                         ))}
                     </div>
                 ) : (
                     <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                        {clubs.slice(0, 8).map(club => (
-                            <div
+                        {clubs.slice(0, 8).map((club, index) => (
+                            <motion.div
                                 key={club._id}
                                 className="group relative bg-white rounded-3xl shadow-lg border border-transparent hover:border-green-200 overflow-hidden transform hover:scale-105 transition-all duration-300 flex flex-col h-full"
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ duration: 0.4, delay: 0.1 * index }}
+                                whileHover={{ y: -5 }}
                             >
                                 <div className="relative h-48 overflow-hidden flex-shrink-0">
                                     <img
@@ -103,74 +129,199 @@ const Home = () => {
                                 </div>
 
                                 <div className="absolute -right-6 -top-6 w-24 h-24 bg-green-200 rounded-full blur-2xl opacity-30 group-hover:opacity-50 transition"></div>
-                            </div>
+                            </motion.div>
                         ))}
                     </div>
                 )}
-            </section>
+            </motion.section>
 
-            <section className="bg-gradient-to-tr from-green-50 to-gray-100 py-8 sm:py-12 md:py-16">
+            <motion.section 
+                className="bg-gradient-to-tr from-green-50 to-gray-100 py-8 sm:py-12 md:py-16"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+            >
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 text-center">
 
                     {/* Trusted Clubs */}
-                    <div className="relative p-8 bg-white rounded-3xl shadow-2xl hover:shadow-xl transition-shadow duration-300 group">
-                        <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-green-200 p-4 rounded-full shadow-lg group-hover:bg-green-300 transition-all duration-300">
+                    <motion.div 
+                        className="relative p-8 bg-white rounded-3xl shadow-2xl hover:shadow-xl transition-shadow duration-300 group"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 0.5 }}
+                        whileHover={{ y: -10 }}
+                    >
+                        <motion.div 
+                            className="absolute -top-6 left-1/2 -translate-x-1/2 bg-green-200 p-4 rounded-full shadow-lg group-hover:bg-green-300 transition-all duration-300"
+                            whileHover={{ scale: 1.1 }}
+                        >
                             <svg className="w-8 h-8 text-green-700" fill="currentColor" viewBox="0 0 20 20">
                                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.707a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 10-1.414 1.414L9 13.414l4.707-4.707z" clipRule="evenodd" />
                             </svg>
-                        </div>
-                        <h3 className="text-xl font-bold text-gray-800 mt-6">Trusted Clubs</h3>
-                        <p className="text-gray-600 mt-3">Verified and secure community clubs.</p>
-                    </div>
+                        </motion.div>
+                        <motion.h3 
+                            className="text-xl font-bold text-gray-800 mt-6"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.6 }}
+                        >
+                            Trusted Clubs
+                        </motion.h3>
+                        <motion.p 
+                            className="text-gray-600 mt-3"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.7 }}
+                        >
+                            Verified and secure community clubs.
+                        </motion.p>
+                    </motion.div>
 
                     {/* Easy Management */}
-                    <div className="relative p-8 bg-white rounded-3xl shadow-2xl hover:shadow-xl transition-shadow duration-300 group">
-                        <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-blue-200 p-4 rounded-full shadow-lg group-hover:bg-blue-300 transition-all duration-300">
+                    <motion.div 
+                        className="relative p-8 bg-white rounded-3xl shadow-2xl hover:shadow-xl transition-shadow duration-300 group"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 0.6 }}
+                        whileHover={{ y: -10 }}
+                    >
+                        <motion.div 
+                            className="absolute -top-6 left-1/2 -translate-x-1/2 bg-blue-200 p-4 rounded-full shadow-lg group-hover:bg-blue-300 transition-all duration-300"
+                            whileHover={{ scale: 1.1 }}
+                        >
                             <svg className="w-8 h-8 text-blue-700" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M3 4a1 1 0 000 2h14a1 1 0 100-2H3zM3 9a1 1 0 100 2h14a1 1 0 100-2H3zM3 14a1 1 0 100 2h14a1 1 0 100-2H3z" />
+                                <path d="M3 4a1 1 0 000 2h14a1 1 0 100-2H3zM3 9a1 1 0 100 2h14a1 1 0 100-2H3zM3 14a1 1 0 100 2h14a1 1 0 02H3z" />
                             </svg>
-                        </div>
-                        <h3 className="text-xl font-bold text-gray-800 mt-6">Easy Management</h3>
-                        <p className="text-gray-600 mt-3">Manage clubs and events effortlessly.</p>
-                    </div>
+                        </motion.div>
+                        <motion.h3 
+                            className="text-xl font-bold text-gray-800 mt-6"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.7 }}
+                        >
+                            Easy Management
+                        </motion.h3>
+                        <motion.p 
+                            className="text-gray-600 mt-3"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.8 }}
+                        >
+                            Manage clubs and events effortlessly.
+                        </motion.p>
+                    </motion.div>
 
                     {/* Secure Payments */}
-                    <div className="relative p-8 bg-white rounded-3xl shadow-2xl hover:shadow-xl transition-shadow duration-300 group">
-                        <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-yellow-200 p-4 rounded-full shadow-lg group-hover:bg-yellow-300 transition-all duration-300">
+                    <motion.div 
+                        className="relative p-8 bg-white rounded-3xl shadow-2xl hover:shadow-xl transition-shadow duration-300 group"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 0.7 }}
+                        whileHover={{ y: -10 }}
+                    >
+                        <motion.div 
+                            className="absolute -top-6 left-1/2 -translate-x-1/2 bg-yellow-200 p-4 rounded-full shadow-lg group-hover:bg-yellow-300 transition-all duration-300"
+                            whileHover={{ scale: 1.1 }}
+                        >
                             <svg className="w-8 h-8 text-yellow-700" fill="currentColor" viewBox="0 0 20 20">
                                 <path d="M4 4h12v2H4V4zm0 5h12v2H4V9zm0 5h12v2H4v-2z" />
                             </svg>
-                        </div>
-                        <h3 className="text-xl font-bold text-gray-800 mt-6">Secure Payments</h3>
-                        <p className="text-gray-600 mt-3">Stripe protected transactions.</p>
-                    </div>
+                        </motion.div>
+                        <motion.h3 
+                            className="text-xl font-bold text-gray-800 mt-6"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.8 }}
+                        >
+                            Secure Payments
+                        </motion.h3>
+                        <motion.p 
+                            className="text-gray-600 mt-3"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.9 }}
+                        >
+                            Stripe protected transactions.
+                        </motion.p>
+                    </motion.div>
 
                 </div>
-            </section>
+            </motion.section>
 
 
-            <section className="relative py-20 bg-gradient-to-r from-indigo-600 via-indigo-500 to-indigo-400 text-white text-center overflow-hidden mb-5">
+            <motion.section 
+                className="relative py-20 bg-gradient-to-r from-indigo-600 via-indigo-500 to-indigo-400 text-white text-center overflow-hidden mb-5"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.7, delay: 0.8 }}
+            >
                 {/* Decorative Light Blobs */}
-                <div className="absolute -left-24 -top-24 w-72 h-72 bg-indigo-300 rounded-full blur-3xl opacity-30 animate-pulse"></div>
-                <div className="absolute -right-24 -bottom-24 w-80 h-80 bg-indigo-400 rounded-full blur-3xl opacity-30 animate-pulse"></div>
+                <motion.div 
+                    className="absolute -left-24 -top-24 w-72 h-72 bg-indigo-300 rounded-full blur-3xl opacity-30"
+                    animate={{ 
+                        scale: [1, 1.1, 1],
+                        opacity: [0.3, 0.4, 0.3]
+                    }}
+                    transition={{ 
+                        duration: 4,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                    }}
+                ></motion.div>
+                <motion.div 
+                    className="absolute -right-24 -bottom-24 w-80 h-80 bg-indigo-400 rounded-full blur-3xl opacity-30"
+                    animate={{ 
+                        scale: [1, 1.15, 1],
+                        opacity: [0.3, 0.5, 0.3]
+                    }}
+                    transition={{ 
+                        duration: 5,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                        delay: 0.5
+                    }}
+                ></motion.div>
 
-                <div className="relative max-w-3xl mx-auto px-6">
-                    <h2 className="text-4xl lg:text-5xl font-extrabold leading-tight">
-                        Ready to Join Your Community?
-                    </h2>
-
-                    <p className="mt-4 text-indigo-100 text-lg lg:text-xl">
-                        Sign up today and become part of something amazing.
-                    </p>
-
-                    <Link
-                        to="/register"
-                        className="mt-8 inline-block bg-white text-indigo-600 font-semibold text-lg px-8 py-3 rounded-full shadow-xl hover:bg-indigo-50 hover:shadow-2xl transition-all duration-300 focus:ring-4 focus:ring-indigo-300"
+                <motion.div 
+                    className="relative max-w-3xl mx-auto px-6"
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 1 }}
+                >
+                    <motion.h2 
+                        className="text-4xl lg:text-5xl font-extrabold leading-tight"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 1.1 }}
                     >
-                        Create Account
-                    </Link>
-                </div>
-            </section>
+                        Ready to Join Your Community?
+                    </motion.h2>
+
+                    <motion.p 
+                        className="mt-4 text-indigo-100 text-lg lg:text-xl"
+                        initial={{ opacity: 0, y: 15 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 1.2 }}
+                    >
+                        Sign up today and become part of something amazing.
+                    </motion.p>
+
+                    <motion.div
+                        initial={{ opacity: 0, y: 15 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 1.3 }}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                    >
+                        <Link
+                            to="/register"
+                            className="mt-8 inline-block bg-white text-indigo-600 font-semibold text-lg px-8 py-3 rounded-full shadow-xl hover:bg-indigo-50 hover:shadow-2xl transition-all duration-300 focus:ring-4 focus:ring-indigo-300"
+                        >
+                            Create Account
+                        </Link>
+                    </motion.div>
+                </motion.div>
+            </motion.section>
 
         </div>
     );

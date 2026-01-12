@@ -5,10 +5,33 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import Loading from "../../Loading/Loading";
+import { motion } from "framer-motion";
 
 const ClubDetails = () => {
   const { id } = useParams();
   const axiosSecure = useAxiosSecure();
+  
+  const { data: clubs, isLoading } = useQuery({
+    queryKey: ["clubs", id],
+    queryFn: async () => {
+      const res = await axios.get(`https://club-sphere-server-seven.vercel.app/clubs/${id}`);
+      const data = res.data;
+      // Set dynamic page title when club data is loaded
+      document.title = data ? `${data.clubName} | Club Details | ClubSphere` : 'Club Details | ClubSphere';
+      
+      // Update description meta tag
+      let descriptionMeta = document.querySelector('meta[name="description"]');
+      if (!descriptionMeta) {
+        descriptionMeta = document.createElement('meta');
+        descriptionMeta.setAttribute('name', 'description');
+        document.head.appendChild(descriptionMeta);
+      }
+      const descriptionContent = data ? `Details about ${data.clubName}. Join ${data.clubName} and connect with like-minded individuals.` : 'View detailed information about a specific club on ClubSphere.';
+      descriptionMeta.setAttribute('content', descriptionContent);
+      
+      return data;
+    }
+  });
   
   const [reviews, setReviews] = useState([]);
   const [averageRating, setAverageRating] = useState(0);
@@ -131,14 +154,6 @@ const ClubDetails = () => {
     }
   };
 
-  const { data: clubs, isLoading } = useQuery({
-    queryKey: ["clubs", id],
-    queryFn: async () => {
-      const res = await axios.get(`http://localhost:3000/clubs/${id}`);
-      return res.data;
-    }
-  });
-
   if (isLoading) {
     return <Loading></Loading>;
   }
@@ -168,19 +183,40 @@ const ClubDetails = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <>
+      <motion.div 
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
       {/* Hero Section */}
-      <div className="relative rounded-2xl overflow-hidden shadow-2xl mb-8">
+      <motion.div 
+        className="relative rounded-2xl overflow-hidden shadow-2xl mb-8"
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.7, delay: 0.2 }}
+      >
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent z-10"></div>
         <img
           src={clubs.image}
           alt={clubs.clubName}
           className="w-full h-96 object-cover transition-transform duration-500 hover:scale-105"
         />
-        <h1 className="absolute bottom-4 left-6 text-4xl font-extrabold text-white drop-shadow-lg">
+        <motion.h1 
+          className="absolute bottom-4 left-6 text-4xl font-extrabold text-white drop-shadow-lg"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+        >
           {clubs.clubName}
-        </h1>
-        <div className="absolute top-4 right-4 bg-white/80 backdrop-blur-sm rounded-full px-3 py-2 flex items-center space-x-2 shadow-lg">
+        </motion.h1>
+        <motion.div 
+          className="absolute top-4 right-4 bg-white/80 backdrop-blur-sm rounded-full px-3 py-2 flex items-center space-x-2 shadow-lg"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.5 }}
+        >
           <div className="flex items-center">
             {[...Array(5)].map((_, i) => (
               <svg
@@ -195,82 +231,162 @@ const ClubDetails = () => {
             ))}
           </div>
           <span className="text-gray-800 font-bold text-sm">{averageRating > 0 ? averageRating.toFixed(1) : 'No ratings'}</span>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
   
       {/* Gallery Section */}
       {clubs.gallery && clubs.gallery.length > 0 && (
-        <div className="mb-12">
-          <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white">Gallery</h2>
+        <motion.div 
+          className="mb-12"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+        >
+          <motion.h2 
+            className="text-2xl font-bold mb-6 text-gray-800 dark:text-white"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+          >
+            Gallery
+          </motion.h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {clubs.gallery.map((galleryImage, index) => (
-              <div key={index} className="aspect-square overflow-hidden rounded-xl shadow-md">
+              <motion.div 
+                key={index} 
+                className="aspect-square overflow-hidden rounded-xl shadow-md"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.1 * index }}
+                whileHover={{ y: -5 }}
+              >
                 <img
                   src={galleryImage}
                   alt={`Gallery ${index + 1}`}
                   className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                 />
-              </div>
+              </motion.div>
             ))}
           </div>
-        </div>
+        </motion.div>
       )}
   
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 space-y-8">
+      <motion.div 
+        className="grid grid-cols-1 lg:grid-cols-3 gap-8"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4 }}
+      >
+        <motion.div className="lg:col-span-2 space-y-8">
           {/* Description / Overview */}
-          <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6">
-            <h2 className="text-2xl font-bold mb-4 text-gray-800 dark:text-white border-b border-gray-200 pb-2">Description / Overview</h2>
-            <p className="text-lg text-gray-700 dark:text-gray-200 leading-relaxed">
+          <motion.section 
+            className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+          >
+            <motion.h2 
+              className="text-2xl font-bold mb-4 text-gray-800 dark:text-white border-b border-gray-200 pb-2"
+              initial={{ opacity: 0, y: -5 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+            >
+              Description / Overview
+            </motion.h2>
+            <motion.p 
+              className="text-lg text-gray-700 dark:text-gray-200 leading-relaxed"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.7 }}
+            >
               {clubs.description}
-            </p>
-          </section>
-  
+            </motion.p>
+          </motion.section>
+      
           {/* Key Information / Specifications */}
-          <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6">
-            <h2 className="text-2xl font-bold mb-4 text-gray-800 dark:text-white border-b border-gray-200 pb-2">Key Information</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="flex items-center space-x-3">
+          <motion.section 
+            className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+          >
+            <motion.h2 
+              className="text-2xl font-bold mb-4 text-gray-800 dark:text-white border-b border-gray-200 pb-2"
+              initial={{ opacity: 0, y: -5 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.7 }}
+            >
+              Key Information
+            </motion.h2>
+            <motion.div 
+              className="grid grid-cols-1 md:grid-cols-2 gap-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.8 }}
+            >
+              <motion.div className="flex items-center space-x-3" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.9 }}>
                 <svg className="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
                 <span className="text-gray-700 dark:text-gray-300">Category: <span className="font-semibold">{clubs.category}</span></span>
-              </div>
-              <div className="flex items-center space-x-3">
+              </motion.div>
+              <motion.div className="flex items-center space-x-3" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 1.0 }}>
                 <svg className="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c0-1.657 1.343-3 3-3s3 1.343 3 3-1.343 3-3 3m-6 9c0 1.657 1.343 3 3 3h10c1.657 0 3-1.343 3-3v-8c0-1.657-1.343-3-3-3H9c-1.657 0-3 1.343-3 3v8z" />
                 </svg>
                 <span className="text-gray-700 dark:text-gray-300">Membership Fee: <span className="font-semibold">{clubs.membershipFee === 0 ? "Free" : `$${clubs.membershipFee}`}</span></span>
-              </div>
-              <div className="flex items-center space-x-3">
+              </motion.div>
+              <motion.div className="flex items-center space-x-3" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 1.1 }}>
                 <svg className="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
                 <span className="text-gray-700 dark:text-gray-300">Location: <span className="font-semibold">{clubs.location || "N/A"}</span></span>
-              </div>
-              <div className="flex items-center space-x-3">
+              </motion.div>
+              <motion.div className="flex items-center space-x-3" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 1.2 }}>
                 <svg className="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
                 <span className="text-gray-700 dark:text-gray-300">Created: <span className="font-semibold">{new Date(clubs.createdAt || clubs.createdAt).toLocaleDateString()}</span></span>
-              </div>
-            </div>
-          </section>
-  
+              </motion.div>
+            </motion.div>
+          </motion.section>
+      
           {/* Reviews / Ratings */}
-          <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6">
-            <h2 className="text-2xl font-bold mb-4 text-gray-800 dark:text-white border-b border-gray-200 pb-2">Reviews & Ratings</h2>
-            <div className="space-y-4">
+          <motion.section 
+            className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7 }}
+          >
+            <motion.h2 
+              className="text-2xl font-bold mb-4 text-gray-800 dark:text-white border-b border-gray-200 pb-2"
+              initial={{ opacity: 0, y: -5 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8 }}
+            >
+              Reviews & Ratings
+            </motion.h2>
+            <motion.div 
+              className="space-y-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.9 }}
+            >
               {loadingReviews ? (
-                <div className="flex flex-col items-center justify-center py-8">
+                <motion.div 
+                  className="flex flex-col items-center justify-center py-8"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 1.0 }}
+                >
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
                   <p className="mt-2 text-gray-500 dark:text-gray-400">Loading reviews...</p>
-                </div>
+                </motion.div>
               ) : reviews && reviews.length > 0 ? (
                 <>
-                  <div className="flex items-center space-x-4">
-                    <div className="flex items-center">
+                  <motion.div className="flex items-center space-x-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.0 }}>
+                    <motion.div className="flex items-center" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 1.1 }}>
                       {[...Array(5)].map((_, i) => (
                         <svg
                           key={i}
@@ -282,12 +398,24 @@ const ClubDetails = () => {
                           <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461c.969 0 1.371-1.24.588-1.81L7.05 2.927z" />
                         </svg>
                       ))}
-                    </div>
+                    </motion.div>
                     <span className="text-gray-700 dark:text-gray-300 font-semibold">{averageRating.toFixed(1)} out of 5</span>
-                  </div>
-                  <div className="space-y-4">
-                    {reviews.map((review) => (
-                      <div key={review._id} className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+                  </motion.div>
+                  <motion.div 
+                    className="space-y-4"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 1.1 }}
+                  >
+                    {reviews.map((review, index) => (
+                      <motion.div 
+                        key={review._id} 
+                        className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 1.2 + (index * 0.1) }}
+                        whileHover={{ scale: 1.02 }}
+                      >
                         <div className="flex items-center mb-2">
                           <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-800 font-semibold mr-3">
                             {review.reviewerName.split(' ').map(n => n[0]).join('').toUpperCase()}
@@ -310,23 +438,47 @@ const ClubDetails = () => {
                           </div>
                         </div>
                         <p className="text-gray-600 dark:text-gray-300 text-sm">{review.comment}</p>
-                      </div>
+                      </motion.div>
                     ))}
-                  </div>
+                  </motion.div>
                 </>
               ) : (
-                <p className="text-gray-500 dark:text-gray-400 text-center py-4">No reviews yet. Be the first to review this club!</p>
+                <motion.p 
+                  className="text-gray-500 dark:text-gray-400 text-center py-4"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 1.0 }}
+                >
+                  No reviews yet. Be the first to review this club!
+                </motion.p>
               )}
-            </div>
-          </section>
-
+            </motion.div>
+          </motion.section>
+      
           {/* Add Review Form */}
-          <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 mt-8">
-            <h2 className="text-2xl font-bold mb-4 text-gray-800 dark:text-white border-b border-gray-200 pb-2">Add Your Review</h2>
-            <div className="space-y-4">
-              <div className="flex items-center space-x-2">
+          <motion.section 
+            className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 mt-8"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.8 }}
+          >
+            <motion.h2 
+              className="text-2xl font-bold mb-4 text-gray-800 dark:text-white border-b border-gray-200 pb-2"
+              initial={{ opacity: 0, y: -5 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.9 }}
+            >
+              Add Your Review
+            </motion.h2>
+            <motion.div 
+              className="space-y-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.0 }}
+            >
+              <motion.div className="flex items-center space-x-2" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 1.1 }}>
                 <span className="text-gray-700 dark:text-gray-300 font-medium">Rating:</span>
-                <div className="flex space-x-1">
+                <motion.div className="flex space-x-1" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 1.2 }}>
                   {[1, 2, 3, 4, 5].map((star) => (
                     <button
                       key={star}
@@ -337,8 +489,8 @@ const ClubDetails = () => {
                       ★
                     </button>
                   ))}
-                </div>
-              </div>
+                </motion.div>
+              </motion.div>
               <textarea
                 value={reviewText}
                 onChange={(e) => setReviewText(e.target.value)}
@@ -353,62 +505,106 @@ const ClubDetails = () => {
               >
                 {loadingReviewSubmit ? 'Submitting...' : 'Submit Review'}
               </button>
-            </div>
-          </section>
-        </div>
-  
+            </motion.div>
+          </motion.section>
+        </motion.div>
+      
         {/* Sidebar */}
-        <div className="space-y-6">
+        <motion.div 
+          className="space-y-6"
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.5 }}
+        >
           {/* Action Buttons */}
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6">
-            <button
+          <motion.div 
+            className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+          >
+            <motion.button
               className="btn bg-indigo-600 text-white hover:bg-indigo-700 w-full py-3 rounded-full font-semibold transition mb-4"
               onClick={() => document.getElementById("join_modal").showModal()}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.7 }}
             >
               Join Club
-            </button>
-            <Link
+            </motion.button>
+            <motion.Link
               to="/all-clubs"
               className="btn btn-outline w-full py-3 rounded-full font-medium"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.8 }}
             >
               ← Back to All Clubs
-            </Link>
-          </div>
-  
+            </motion.Link>
+          </motion.div>
+      
           {/* Related Items */}
-          <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6">
-            <h2 className="text-xl font-bold mb-4 text-gray-800 dark:text-white">Related Clubs</h2>
-            <div className="space-y-4">
+          <motion.section 
+            className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7 }}
+          >
+            <motion.h2 
+              className="text-xl font-bold mb-4 text-gray-800 dark:text-white"
+              initial={{ opacity: 0, y: -5 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8 }}
+            >
+              Related Clubs
+            </motion.h2>
+            <motion.div 
+              className="space-y-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.9 }}
+            >
               {clubs.relatedClubs && clubs.relatedClubs.length > 0 ? (
-                clubs.relatedClubs.map((relatedClub) => (
-                  <Link
+                clubs.relatedClubs.map((relatedClub, index) => (
+                  <motion.Link
                     key={relatedClub._id}
                     to={`/clubs/${relatedClub._id}`}
                     className="block p-3 rounded-lg border border-gray-200 hover:border-indigo-300 hover:bg-indigo-50 transition-colors"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1.0 + (index * 0.1) }}
+                    whileHover={{ scale: 1.02 }}
                   >
                     <h3 className="font-semibold text-gray-800 dark:text-white">{relatedClub.clubName}</h3>
                     <p className="text-sm text-gray-600 dark:text-gray-300 truncate">{relatedClub.description}</p>
-                  </Link>
+                  </motion.Link>
                 ))
               ) : (
-                <p className="text-gray-500 dark:text-gray-400 text-sm">No related clubs found.</p>
+                <motion.p 
+                  className="text-gray-500 dark:text-gray-400 text-sm"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 1.0 }}
+                >
+                  No related clubs found.
+                </motion.p>
               )}
-            </div>
-          </section>
-        </div>
-      </div>
+            </motion.div>
+          </motion.section>
+        </motion.div>
+      </motion.div>
   
       <dialog id="join_modal" className="modal">
         <div className="modal-box space-y-4 p-6 bg-white rounded-xl shadow-2xl">
           <h3 className="text-2xl font-bold text-center">{`Join ${clubs.clubName}`}</h3>
-  
+    
           <div className="text-sm text-gray-700 space-y-2">
             <p><strong>Category:</strong> {clubs.category}</p>
             <p><strong>Fee:</strong>{}
               {clubs.membershipFee === 0 ? "Free" : `$${clubs.membershipFee}`}</p>
             <p className="text-gray-500">{clubs.description}</p>
           </div>
-  
+    
           <div className="modal-action flex flex-col gap-3">
             {clubs.membershipFee === 0 ? (
               <>
@@ -444,7 +640,8 @@ const ClubDetails = () => {
           </div>
         </div>
       </dialog>
-    </div>
+    </motion.div>
+    </>
   );
 };
 

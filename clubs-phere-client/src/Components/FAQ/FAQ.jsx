@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const FAQ = () => {
   const [openIndex, setOpenIndex] = useState(null);
@@ -43,17 +44,61 @@ const FAQ = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold text-gray-800 mb-4">Frequently Asked Questions</h1>
-        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
+      className="max-w-4xl mx-auto p-6"
+    >
+      <motion.div 
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6 }}
+        className="text-center mb-12"
+      >
+        <motion.h1 
+          initial={{ scale: 0.95 }}
+          animate={{ scale: 1 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
+          className="text-4xl font-bold text-gray-800 mb-4"
+        >
+          Frequently Asked Questions
+        </motion.h1>
+        <motion.p 
+          initial={{ y: 10, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.4, duration: 0.5 }}
+          className="text-lg text-gray-600 max-w-2xl mx-auto"
+        >
           Find answers to common questions about using ClubSphere and managing your clubs and memberships.
-        </p>
-      </div>
+        </motion.p>
+      </motion.div>
 
-      <div className="space-y-4">
+      <motion.div 
+        initial="hidden"
+        animate="visible"
+        variants={{
+          visible: {
+            transition: {
+              staggerChildren: 0.1,
+            },
+          },
+        }}
+        className="space-y-4"
+      >
         {faqs.map((faq, index) => (
-          <div key={index} className="card card-standard bg-base-100 border border-base-300 rounded-xl shadow-sm">
+          <motion.div 
+            key={index}
+            custom={index}
+            variants={{
+              hidden: { opacity: 0, y: 20 },
+              visible: { opacity: 1, y: 0 },
+            }}
+            whileHover={{ y: -5 }}
+            whileTap={{ scale: 0.98 }}
+            className="card card-standard bg-base-100 border border-base-300 rounded-xl shadow-sm overflow-hidden"
+          >
             <div 
               className="cursor-pointer p-6 flex justify-between items-center"
               onClick={() => toggleFAQ(index)}
@@ -74,25 +119,57 @@ const FAQ = () => {
               </svg>
             </div>
             
-            {openIndex === index && (
-              <div className="px-6 pb-6 pt-2 border-t border-base-300">
-                <p className="text-gray-700">{faq.answer}</p>
-              </div>
-            )}
-          </div>
+            <AnimatePresence>
+              {openIndex === index && (
+                <motion.div 
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="px-6 pb-6 pt-2 border-t border-base-300 overflow-hidden"
+                >
+                  <p className="text-gray-700">{faq.answer}</p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
 
-      <div className="mt-12 text-center">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">Still have questions?</h2>
-        <p className="text-gray-600 mb-6">
+      <motion.div 
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.6, duration: 0.5 }}
+        className="mt-12 text-center"
+      >
+        <motion.h2 
+          initial={{ scale: 0.95 }}
+          animate={{ scale: 1 }}
+          transition={{ delay: 0.7, duration: 0.4 }}
+          className="text-2xl font-bold text-gray-800 mb-4"
+        >
+          Still have questions?
+        </motion.h2>
+        <motion.p 
+          initial={{ y: 10, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.8, duration: 0.4 }}
+          className="text-gray-600 mb-6"
+        >
           Our support team is here to help you with any additional questions you might have.
-        </p>
-        <button className="btn btn-primary">
+        </motion.p>
+        <motion.button 
+          initial={{ scale: 0.95 }}
+          animate={{ scale: 1 }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          transition={{ delay: 0.9, duration: 0.3 }}
+          className="btn btn-primary"
+        >
           Contact Support
-        </button>
-      </div>
-    </div>
+        </motion.button>
+      </motion.div>
+    </motion.div>
   );
 };
 

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { useLocation } from "react-router";
@@ -91,12 +92,28 @@ const ClubsManagement = () => {
         : clubs;
 
     return (
-        <div className="max-w-7xl mx-auto p-6">
-            <h2 className="text-2xl font-bold mb-4">
+        <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+            className="max-w-7xl mx-auto p-6"
+        >
+            <motion.h2 
+                initial={{ y: -20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.6 }}
+                className="text-2xl font-bold mb-4"
+            >
                 Total Clubs: {clubs.length}
-            </h2>
+            </motion.h2>
 
-            <div className="overflow-x-auto bg-white rounded shadow">
+            <motion.div 
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.2, duration: 0.5 }}
+                className="overflow-x-auto bg-white rounded shadow"
+            >
                 <table className="w-full text-center">
                     <thead className="bg-indigo-600 text-white">
                         <tr>
@@ -110,8 +127,17 @@ const ClubsManagement = () => {
                     </thead>
 
                     <tbody>
+                        <AnimatePresence>
                         {filtered.map((club, i) => (
-                            <tr key={club._id} className="border-b">
+                            <motion.tr 
+                                key={club._id}
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: 20 }}
+                                transition={{ duration: 0.3, delay: i * 0.05 }}
+                                className="border-b"
+                                whileHover={{ y: -2, backgroundColor: '#f9fafb' }}
+                            >
                                 <td>{i + 1}</td>
                                 <td>{club.clubName}</td>
                                 <td>{club.createdBy}</td>
@@ -120,53 +146,76 @@ const ClubsManagement = () => {
                                 <td className="space-x-1 py-2">
                                     {club.status === "pending" && (
                                         <>
-                                            <button
+                                            <motion.button
+                                                whileHover={{ scale: 1.05 }}
+                                                whileTap={{ scale: 0.95 }}
                                                 onClick={() =>
                                                     handleStatusChange(club._id, "approved")
                                                 }
                                                 className="bg-green-600 text-white px-2 py-1 rounded"
                                             >
                                                 Approve
-                                            </button>
-                                            <button
+                                            </motion.button>
+                                            <motion.button
+                                                whileHover={{ scale: 1.05 }}
+                                                whileTap={{ scale: 0.95 }}
                                                 onClick={() =>
                                                     handleStatusChange(club._id, "rejected")
                                                 }
                                                 className="bg-red-600 text-white px-2 py-1 rounded"
                                             >
                                                 Reject
-                                            </button>
+                                            </motion.button>
                                         </>
                                     )}
 
-                                    <button
+                                    <motion.button
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
                                         onClick={() => openEditForm(club)}
                                         className="bg-yellow-500 text-white px-2 py-1 rounded"
                                     >
                                         Edit
-                                    </button>
+                                    </motion.button>
 
-                                    <button
+                                    <motion.button
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
                                         onClick={() => handleDelete(club._id)}
                                         className="bg-gray-700 text-white px-2 py-1 rounded"
                                     >
                                         Delete
-                                    </button>
+                                    </motion.button>
                                 </td>
-                            </tr>
+                            </motion.tr>
                         ))}
+                        </AnimatePresence>
                     </tbody>
                 </table>
-            </div>
+            </motion.div>
 
             {/* edit modal */}
+            <AnimatePresence>
             {editingClub && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
-                    <div className="bg-white p-5 rounded w-96">
+                <motion.div 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+                >
+                    <motion.div 
+                        initial={{ scale: 0.8, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        exit={{ scale: 0.8, opacity: 0 }}
+                        transition={{ type: 'spring', damping: 25 }}
+                        className="bg-white p-5 rounded w-96"
+                    >
                         <h3 className="text-xl font-bold mb-3">Edit Club</h3>
 
                         {bannerPreview && (
-                            <img
+                            <motion.img
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
                                 src={bannerPreview}
                                 alt="preview"
                                 className="w-full h-40 object-cover rounded mb-3"
@@ -177,38 +226,93 @@ const ClubsManagement = () => {
                             />
                         )}
 
-                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
-                            <input {...register("clubName")} placeholder="e.g., Photography Enthusiasts Club, Tech Innovators Society, Sports Champions United" className="input" />
-                            <input {...register("description")} placeholder="Share the club's mission, vision, activities, meeting schedule, goals, and what makes it special. Describe what members will gain from joining and any unique features..." className="input" />
-                            <input {...register("location")} placeholder="e.g., Downtown Community Center" className="input" />
-                            <input type="number" {...register("membershipFee")} placeholder="e.g., 25" className="input" />
-                            <input {...register("category")} placeholder="e.g., Photography" className="input" />
-                            <input
+                        <motion.form 
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.2 }}
+                            onSubmit={handleSubmit(onSubmit)} 
+                            className="space-y-2"
+                        >
+                            <motion.input 
+                                initial={{ x: -20, opacity: 0 }}
+                                animate={{ x: 0, opacity: 1 }}
+                                transition={{ delay: 0.3 }}
+                                {...register("clubName")} 
+                                placeholder="e.g., Photography Enthusiasts Club, Tech Innovators Society, Sports Champions United" 
+                                className="input w-full"
+                            />
+                            <motion.input 
+                                initial={{ x: -20, opacity: 0 }}
+                                animate={{ x: 0, opacity: 1 }}
+                                transition={{ delay: 0.4 }}
+                                {...register("description")} 
+                                placeholder="Share the club's mission, vision, activities, meeting schedule, goals, and what makes it special. Describe what members will gain from joining and any unique features..." 
+                                className="input w-full"
+                            />
+                            <motion.input 
+                                initial={{ x: -20, opacity: 0 }}
+                                animate={{ x: 0, opacity: 1 }}
+                                transition={{ delay: 0.5 }}
+                                {...register("location")} 
+                                placeholder="e.g., Downtown Community Center" 
+                                className="input w-full"
+                            />
+                            <motion.input 
+                                initial={{ x: -20, opacity: 0 }}
+                                animate={{ x: 0, opacity: 1 }}
+                                transition={{ delay: 0.6 }}
+                                type="number" 
+                                {...register("membershipFee")} 
+                                placeholder="e.g., 25" 
+                                className="input w-full"
+                            />
+                            <motion.input 
+                                initial={{ x: -20, opacity: 0 }}
+                                animate={{ x: 0, opacity: 1 }}
+                                transition={{ delay: 0.7 }}
+                                {...register("category")} 
+                                placeholder="e.g., Photography" 
+                                className="input w-full"
+                            />
+                            <motion.input
+                                initial={{ x: -20, opacity: 0 }}
+                                animate={{ x: 0, opacity: 1 }}
+                                transition={{ delay: 0.8 }}
                                 {...register("bannerImage")}
                                 placeholder="e.g., https://images.unsplash.com/photo-1542500429-4116073fc98f (club activity, meeting, or relevant image)"
-                                className="input"
+                                className="input w-full"
                             />
 
-                            <div className="flex justify-end gap-2">
-                                <button
+                            <motion.div 
+                                initial={{ y: 20, opacity: 0 }}
+                                animate={{ y: 0, opacity: 1 }}
+                                transition={{ delay: 0.9 }}
+                                className="flex justify-end gap-2"
+                            >
+                                <motion.button
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
                                     type="button"
                                     onClick={() => setEditingClub(null)}
                                     className="bg-gray-400 px-3 py-1 rounded text-white"
                                 >
                                     Cancel
-                                </button>
-                                <button
+                                </motion.button>
+                                <motion.button
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
                                     type="submit"
                                     className="bg-indigo-600 px-3 py-1 rounded text-white"
                                 >
                                     Save
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+                                </motion.button>
+                            </motion.div>
+                        </motion.form>
+                    </motion.div>
+                </motion.div>
             )}
-        </div>
+            </AnimatePresence>
+        </motion.div>
     );
 };
 

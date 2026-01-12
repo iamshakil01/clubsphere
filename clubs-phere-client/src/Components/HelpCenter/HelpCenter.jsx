@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const HelpCenter = () => {
   const [activeTab, setActiveTab] = useState('getting-started');
@@ -208,20 +209,66 @@ const HelpCenter = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-6">
-      <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold text-gray-800 mb-4">Help Center</h1>
-        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
+      className="max-w-6xl mx-auto p-6"
+    >
+      <motion.div 
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6 }}
+        className="text-center mb-12"
+      >
+        <motion.h1 
+          initial={{ scale: 0.95 }}
+          animate={{ scale: 1 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
+          className="text-4xl font-bold text-gray-800 mb-4"
+        >
+          Help Center
+        </motion.h1>
+        <motion.p 
+          initial={{ y: 10, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.4, duration: 0.5 }}
+          className="text-lg text-gray-600 max-w-2xl mx-auto"
+        >
           Find answers to common questions and learn how to make the most of your ClubSphere experience.
-        </p>
-      </div>
+        </motion.p>
+      </motion.div>
 
-      <div className="mb-8">
-        <div className="flex flex-wrap justify-center gap-2 mb-6">
-          {tabs.map(tab => (
-            <button
+      <motion.div 
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.3, duration: 0.5 }}
+        className="mb-8"
+      >
+        <motion.div 
+          initial="hidden"
+          animate="visible"
+          variants={{
+            visible: {
+              transition: {
+                staggerChildren: 0.1,
+              },
+            },
+          }}
+          className="flex flex-wrap justify-center gap-2 mb-6"
+        >
+          {tabs.map((tab, index) => (
+            <motion.button
               key={tab.id}
+              custom={index}
+              variants={{
+                hidden: { opacity: 0, y: 10 },
+                visible: { opacity: 1, y: 0 },
+              }}
               onClick={() => setActiveTab(tab.id)}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                 activeTab === tab.id
                   ? 'bg-primary text-white'
@@ -229,11 +276,16 @@ const HelpCenter = () => {
               }`}
             >
               {tab.name}
-            </button>
+            </motion.button>
           ))}
-        </div>
+        </motion.div>
 
-        <div className="mb-8">
+        <motion.div 
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.4, duration: 0.5 }}
+          className="mb-8"
+        >
           <div className="relative">
             <input
               type="text"
@@ -255,44 +307,110 @@ const HelpCenter = () => {
               />
             </svg>
           </div>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
 
-      <div className="space-y-8">
-        {helpSections[activeTab].map((section, index) => (
-          <div key={index} className="card card-standard bg-base-100 border border-base-300 rounded-xl shadow-sm p-8">
-            <h2 className="text-2xl font-bold text-gray-800 mb-2">{section.title}</h2>
-            <p className="text-gray-600 mb-6">{section.description}</p>
-            
-            <div className="space-y-4">
-              {section.steps.map((step, stepIndex) => (
-                <div key={stepIndex} className="flex items-start">
-                  <div className="bg-primary text-white rounded-full h-6 w-6 flex items-center justify-center text-sm font-bold mr-4 flex-shrink-0">
-                    {stepIndex + 1}
-                  </div>
-                  <p className="text-gray-700">{step}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
+      <AnimatePresence mode="wait">
+        <motion.div 
+          key={activeTab}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
+          variants={{
+            hidden: { opacity: 0 },
+            visible: {
+              opacity: 1,
+              transition: {
+                staggerChildren: 0.1,
+              },
+            },
+            exit: { opacity: 0 },
+          }}
+          className="space-y-8"
+        >
+          {helpSections[activeTab].map((section, index) => (
+            <motion.div 
+              key={index}
+              custom={index}
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                visible: { opacity: 1, y: 0 },
+              }}
+              whileHover={{ y: -5 }}
+              whileTap={{ scale: 0.98 }}
+              className="card card-standard bg-base-100 border border-base-300 rounded-xl shadow-sm p-8"
+            >
+              <h2 className="text-2xl font-bold text-gray-800 mb-2">{section.title}</h2>
+              <p className="text-gray-600 mb-6">{section.description}</p>
+              
+              <div className="space-y-4">
+                {section.steps.map((step, stepIndex) => (
+                  <motion.div 
+                    key={stepIndex}
+                    custom={stepIndex}
+                    variants={{
+                      hidden: { opacity: 0, x: -10 },
+                      visible: { opacity: 1, x: 0 },
+                    }}
+                    className="flex items-start"
+                  >
+                    <div className="bg-primary text-white rounded-full h-6 w-6 flex items-center justify-center text-sm font-bold mr-4 flex-shrink-0">
+                      {stepIndex + 1}
+                    </div>
+                    <p className="text-gray-700">{step}</p>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
+      </AnimatePresence>
 
-      <div className="mt-12 text-center">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">Still need help?</h2>
-        <p className="text-gray-600 mb-6">
+      <motion.div 
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.6, duration: 0.5 }}
+        className="mt-12 text-center"
+      >
+        <motion.h2 
+          initial={{ scale: 0.95 }}
+          animate={{ scale: 1 }}
+          transition={{ delay: 0.7, duration: 0.4 }}
+          className="text-2xl font-bold text-gray-800 mb-4"
+        >
+          Still need help?
+        </motion.h2>
+        <motion.p 
+          initial={{ y: 10, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.8, duration: 0.4 }}
+          className="text-gray-600 mb-6"
+        >
           Our support team is ready to assist you with any questions you might have.
-        </p>
-        <div className="flex justify-center gap-4">
-          <button className="btn btn-primary">
+        </motion.p>
+        <motion.div 
+          initial={{ y: 10, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.9, duration: 0.4 }}
+          className="flex justify-center gap-4"
+        >
+          <motion.button 
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="btn btn-primary"
+          >
             Contact Support
-          </button>
-          <button className="btn btn-outline">
+          </motion.button>
+          <motion.button 
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="btn btn-outline"
+          >
             Schedule a Demo
-          </button>
-        </div>
-      </div>
-    </div>
+          </motion.button>
+        </motion.div>
+      </motion.div>
+    </motion.div>
   );
 };
 

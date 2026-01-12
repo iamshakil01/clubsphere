@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import Loading from "../../Loading/Loading";
 import useAuth from "../../../Hooks/useAuth";
@@ -68,21 +69,60 @@ const Events = () => {
   };
 
   return (
-    <div className="px-4 py-8 max-w-7xl mx-auto">
-      <div className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
+      className="px-4 py-8 max-w-7xl mx-auto"
+    >
+      <motion.div 
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6 }}
+        className="text-center mb-12"
+      >
+        <motion.h1 
+          initial={{ scale: 0.95 }}
+          animate={{ scale: 1 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
+          className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent"
+        >
           Upcoming Events
-        </h1>
-        <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+        </motion.h1>
+        <motion.p 
+          initial={{ y: 10, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.4, duration: 0.5 }}
+          className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto"
+        >
           Discover exciting events and connect with your community
-        </p>
-      </div>
+        </motion.p>
+      </motion.div>
 
       {/* EVENT CARDS */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {events.map((evt) => (
-          <div 
+      <motion.div 
+        initial="hidden"
+        animate="visible"
+        variants={{
+          visible: {
+            transition: {
+              staggerChildren: 0.1,
+            },
+          },
+        }}
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+      >
+        {events.map((evt, index) => (
+          <motion.div 
             key={evt._id} 
+            custom={index}
+            variants={{
+              hidden: { opacity: 0, y: 20 },
+              visible: { opacity: 1, y: 0 },
+            }}
+            whileHover={{ y: -10 }}
+            whileTap={{ scale: 0.98 }}
             className="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 h-full border border-base-200 overflow-hidden"
           >
             <div className="relative">
@@ -141,9 +181,9 @@ const Events = () => {
                 </button>
               </div>
             </div>
-          </div>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
 
       {/* MODAL */}
       {selectedEvent && (
@@ -213,7 +253,7 @@ const Events = () => {
           </div>
         </div>
       )}
-    </div>
+    </motion.div>
   );
 };
 

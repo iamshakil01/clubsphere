@@ -149,7 +149,7 @@ const Navbar = () => {
                             tabIndex={0}
                             className="btn btn-ghost btn-circle avatar hover:bg-green-100"
                         >
-                            <div className="w-10 rounded-full ring ring-green-300 ring-offset-2">
+                            <div className="w-10 h-10 rounded-full ring ring-green-300 ring-offset-2 overflow-hidden bg-gray-200">
                                 <img
                                     src={user.photoURL || "https://i.ibb.co/6rW81yM/user-default.png"}
                                     alt={user.displayName || user.email}
